@@ -4,7 +4,6 @@ project(SkipList)
 
 add_executable(${PROJECT_NAME}
     src/main.cc
-    src/SkipList.cc
 )
 
 target_include_directories(${PROJECT_NAME}
