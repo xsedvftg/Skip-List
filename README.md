@@ -12,7 +12,7 @@ simple and crude
 
   * example:
 
-    ![image-20230320120841007](.\example.png)
+    ![example](example.png)
 
 ## Limitations
 
