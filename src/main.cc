@@ -3,10 +3,10 @@
 int main() {
     SkipList<int> sl;
     sl.add(13, 3);
-    sl.add(0,8);
+    sl.add(34,8);
     sl.add(3,8);
-    sl.add(3,8);
-    sl.add(9,8);
+    sl.add(22,8);
+    sl.add(103,8);
     sl.add(1,8);
     sl.add(8,8);
     sl.print(); 
