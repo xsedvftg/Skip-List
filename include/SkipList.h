@@ -262,9 +262,6 @@ void SkipList<T>::print() const {
 
 template <typename T>
 SkipList<T>::~SkipList() {
-    // 从 head 往上析构
-    reverse_level(rear);
-    
     SkipNode<T> *node = head;
     while (node->next_node) {
         node->release_node();
@@ -272,10 +269,10 @@ SkipList<T>::~SkipList() {
     }
 
     SkipNode<T> *temp = node;
-    node = node->next_level;
+    node = rear;
     delete temp;
 
-    while (node) {
+    while (node != head) {
         while (node->next_node) {
             node->rm_node();
         }
