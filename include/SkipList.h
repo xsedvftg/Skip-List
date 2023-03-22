@@ -4,6 +4,7 @@
 #include "SkipNode.h"
 #include <unordered_map>
 #include <iostream>
+#include <memory>
 #include <utility>
 #include <vector>
 #include <random>
@@ -183,18 +184,19 @@ void SkipList<T>::print() const {
     */
     size_t num = 0;
     std::unordered_map<SkipNode<T> *, int> uMap;
-    std::vector<std::string> end_level;
-    size_t max_element_len = 0;
+    std::vector<std::shared_ptr<std::string>> end_level;
+    size_t max_element_len = 0; // 用于统一元素占用大小对齐打印结果
     while (node->next_node) {
         node = node->next_node;
-        uMap[node] = num;
-        ++num;
+        uMap[node] = num++;
 
-        end_level.push_back(std::to_string(node->getKey()));
-        max_element_len = std::max(max_element_len, end_level.back().size());
+        // end_level.emplace_back(std::to_string(node->getKey()));
+        end_level.push_back(std::make_shared<std::string>(std::to_string(node->getKey())));
+        max_element_len = std::max(max_element_len, end_level.back()->size());
     }
 
-    std::vector<std::vector<std::string>> levels(max_levels, std::vector<std::string>(num));
+    std::vector<std::vector<std::shared_ptr<std::string>>>
+    levels(max_levels, std::vector<std::shared_ptr<std::string>>(num));
     levels.back() = std::move(end_level);
 
     /*
@@ -210,13 +212,10 @@ void SkipList<T>::print() const {
         auto level_node = node;
         while (level_node->next_node) {
             level_node = level_node->next_node;
-            auto it = uMap.find(level_node->next_level);
-            size_t column = it->second;
+            size_t column = uMap.find(level_node->next_level)->second;
             uMap[level_node] = column;
 
             (*levels_rit)[column] = levels.back()[column]; // 应更改为拷贝指针
-
-            uMap.erase(it);
         }
     }
     reverse_level(head);
@@ -231,19 +230,20 @@ void SkipList<T>::print() const {
         std::string next_line;
         bool have_element = false;
         for (size_t j = 0; j < num; ++j) {
-            if (levels[i][j].empty()) {
+            if (levels[i][j] == nullptr) {
+                // 打印 --
                 std::cout << line;
-                if (j + 1 == num || !levels[i][j + 1].empty()) {
+                if (j + 1 == num || levels[i][j + 1]) {
                     std::cout << '>';
                 } else {
                     std::cout << '-';
                 }
                 next_line += empty_next_line;
             } else {
-                std::cout << levels[i][j]
-                << std::string(max_element_len - levels[i][j].size(), ' ')
+                std::cout << *levels[i][j]
+                << std::string(max_element_len - levels[i][j]->size(), ' ')
                 << "-";
-                if (j + 1 == num || !levels[i][j + 1].empty()) {
+                if (j + 1 == num || levels[i][j + 1]) {
                     std::cout << '>';
                 } else {
                     std::cout << '-';
