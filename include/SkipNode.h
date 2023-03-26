@@ -64,7 +64,7 @@ void SkipNode<T>::insert_node(SkipNode *node) {
     node->next_node = temp;
 }
 
-template <typename T>
+template <typename T> inline
 void SkipNode<T>::rm_node() {
     if (next_node == nullptr) return;
     SkipNode *temp = next_node;
