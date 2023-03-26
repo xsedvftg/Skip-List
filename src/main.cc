@@ -1,7 +1,8 @@
 #include "SkipList.h"
 
 int main() {
-    SkipList<int> sl;
+    SkipList<int> b;
+    SkipList<int> sl = std::move(b);
     sl.add(13, 3);
     sl.add(34,8);
     sl.add(3,8);

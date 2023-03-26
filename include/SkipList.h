@@ -20,6 +20,12 @@ public:
         init(max_levels);
     }
     
+    SkipList(const SkipList<T> &rhs) = delete;
+    SkipList<T> &operator=(const SkipList<T> &rhs) = delete;
+
+    SkipList(SkipList<T> &&rhs) noexcept;
+    SkipList<T> &operator=(SkipList<T> &&rhs) noexcept;
+
     bool exist(int key) const;
     
     T get(int key);
@@ -42,6 +48,8 @@ private:
     /*
     同层内移动node，直到下一个结点的值大于等于目标值
     */
+    void free();
+
     void end_of_less(SkipNode<T> *&node, int key);
 
     SkipNode<T> *find_bef_first(int key);
@@ -54,6 +62,25 @@ private:
 
     size_t max_levels = 8;
 };
+
+template <typename T>
+SkipList<T>::SkipList(SkipList<T> &&rhs) noexcept
+    : head(rhs.head), rear(rhs.rear), max_levels(rhs.max_levels)
+{
+    rhs.head = rhs.rear = nullptr;
+}
+
+template <typename T>
+SkipList<T> &SkipList<T>::operator=(SkipList<T> &&rhs) noexcept {
+    if (rhs == *this) return *this;
+
+    free();
+    rear = rhs.rear;
+    head = rhs.head;
+    max_levels = rhs.max_levels;
+
+    rhs.head = rhs.rear = nullptr;
+}
 
 template <typename T>
 std::default_random_engine SkipList<T>::e;
@@ -261,7 +288,8 @@ void SkipList<T>::print() const {
 }
 
 template <typename T>
-SkipList<T>::~SkipList() {
+void SkipList<T>::free() {
+    if (!head) return; 
     SkipNode<T> *node = head;
     while (node->next_node) {
         node->release_node();
@@ -280,6 +308,11 @@ SkipList<T>::~SkipList() {
         node = node->next_level;
         delete temp;
     }
+}
+
+template <typename T>
+SkipList<T>::~SkipList() {
+    free();
 }
 
 
