@@ -1,19 +1,19 @@
 #include <utility>
-template <typename T>
+template <typename K, typename V>
 struct SkipNode {
     SkipNode() = default;
 
-    SkipNode(int key_, T value)
-        : key(key_), val(new T(std::move(value))) {}
+    SkipNode(K key_, V value)
+        : key(key_), val(new V(std::move(value))) {}
 
-    SkipNode(int key_, T *value_ptr)
+    SkipNode(K key_, V *value_ptr)
         : key(key_), val(value_ptr) {}
 
     explicit SkipNode(SkipNode *level)
         : next_level(level) {}
 
-    int getKey() const;
-    T getVal() const;
+    const K &getKey() const;
+    const V &getVal() const;
 
     /*
     析构同层后方存储的值
@@ -36,46 +36,46 @@ struct SkipNode {
     SkipNode *next_level = nullptr;
     SkipNode *next_node = nullptr; // 同层后方结点
 private:
-    int key;
-    T *val = nullptr;
+    K key;
+    V *val = nullptr;
 };
 
-template <typename T> inline
-int SkipNode<T>::getKey() const {
+template <typename K, typename V> inline
+const K &SkipNode<K, V>::getKey() const {
     return key;
 }
 
-template <typename T> inline
-T SkipNode<T>::getVal() const {
+template <typename K, typename V> inline
+const V &SkipNode<K, V>::getVal() const {
     return *val;
 }
 
-template <typename T> inline
-void SkipNode<T>::release_node() {
+template <typename K, typename V> inline
+void SkipNode<K, V>::release_node() {
     if (next_node == nullptr) return;
     delete next_node->val;
     next_node->val = nullptr;
 }
 
-template <typename T> inline
-void SkipNode<T>::insert_node(SkipNode *node) {
+template <typename K, typename V> inline
+void SkipNode<K, V>::insert_node(SkipNode *node) {
     SkipNode *temp = next_node;
     next_node = node;
     node->next_node = temp;
 }
 
-template <typename T> inline
-void SkipNode<T>::rm_node() {
+template <typename K, typename V> inline
+void SkipNode<K, V>::rm_node() {
     if (next_node == nullptr) return;
     SkipNode *temp = next_node;
     next_node = temp->next_node;
     delete temp;
 }
 
-template <typename T>
-void reverse_level(SkipNode<T> *curr) {
-    SkipNode<T> *prev = nullptr;
-    SkipNode<T> *temp;
+template <typename K, typename V>
+void reverse_level(SkipNode<K, V> *curr) {
+    SkipNode<K, V> *prev = nullptr;
+    SkipNode<K, V> *temp;
     while (curr) {
         temp = curr->next_level;
         curr->next_level = prev;

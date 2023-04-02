@@ -4,11 +4,13 @@ Intuitive implementation
 
 ## Features
 
-* Data is stored sorted by key.
+* Data is stored sorted by key, key can be of any type.
+
+* You can specify any sort method; by default, std::less is used
 
 * The basic operations are `add(key, val)`, `erase_last(key)`, `get(key)`, `print()`
 
-* using `skiplist.print()` to show the structure in your CLI(utf-8).
+* using `skiplist.print()` to output the structure graph through standard output
 
   * example:
 
@@ -31,11 +33,10 @@ Intuitive implementation
 
 ## Limitations
 
-* Only int is supported as the key type.
 * The value type have to be destructible with delete keyword.
 * It can store multiple values with the same key, but with `erase_last(key)` only the last inserted element with the same key can be removed each time.
 
-* There is no c++ standard specified in CMakeLists.txt, but c++11 should be the minimum.
+* There is no C++ standard specified in `CMakeLists.txt`, but `C++11` should be the minimum.
 
 ## Reference
 
