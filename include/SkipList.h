@@ -10,16 +10,16 @@
 #include <random>
 #include <functional>
 
+#define SKIPLIST_TEMPLAGE_ARGUMENTS template <typename K, typename V, typename Compare>
+
+namespace SKIPLIST {
+
 template <typename K, typename V, typename Compare = std::less<K>>
 class SkipList {
-public:
-  SkipList() {
-    init(max_levels);
-  }
+ public:
+  SkipList() { Init(max_levels); }
 
-  explicit SkipList(int level): max_levels(level) {
-    init(max_levels);
-  }
+  explicit SkipList(int level): max_levels(level) { Init(max_levels); }
 
   SkipList(const SkipList &rhs) = delete;
   SkipList &operator=(const SkipList &rhs) = delete;
@@ -27,35 +27,56 @@ public:
   SkipList(SkipList &&rhs) noexcept;
   SkipList &operator=(SkipList &&rhs) noexcept;
 
-  bool exist(K key) const;
+  bool Exist(K key) const;
 
-  V get(K key);
+  V Get(K key);
 
-  void add(K key, V val);
+  void Add(K key, V val);
 
-  bool erase_last(K key);
+  bool Erase_last(K key);
 
-  void print() const;
+  void Print() const;
 
   ~SkipList();
 
-private:
-  void init(int levels);
-  /*
-  计算从最顶层需要向下走多少层开始插入元素
-  设定非顶层元素有 1/2 的概率出现在上层
-  */
-  int random_levels();
-  /*
-  同层内移动node，直到下一个结点的值大于等于目标值
-  */
-  void free();
+ private:
+  /**
+   * @brief 构造表的真实执行函数
+   *
+   * @param levels
+   */
+  void Init(int levels);
 
-  void end_of_less(SkipNode<K, V> *&node, K key);
+  /**
+   * @brief 计算从最顶层需要向下走多少层开始插入元素，设定非顶层元素有 1/2 的概率出现在上层
+   *
+   * @return 从最顶层移动到开始插入元素的地方所需的步数
+   */
+  int Random_levels();
 
-  SkipNode<K, V> *find_bef_first(K key);
+  /**
+   * @brief 析构表的真实执行函数
+   *
+   */
+  void Free();
 
-private:
+  /**
+   * @brief 同层内移动node，直到下一个结点的值大于等于目标值
+   * 
+   * @param node 需要移动的结点
+   * @param key 结点最终所处位置的上界
+   */
+  void End_of_less(SkipNode<K, V> *&node, K key);
+
+  /**
+   * @brief 找到表中符合给定键的结点
+   * 
+   * @param key 
+   * @return SkipNode<K, V>* 
+   */
+  SkipNode<K, V> *Find_bef_first(K key);
+
+ private:
   static Compare compare;
   static std::default_random_engine e;
   static std::uniform_int_distribution<int> u;
@@ -65,17 +86,15 @@ private:
   size_t max_levels = 8;
 };
 
-template <typename K, typename V, typename Compare>
+SKIPLIST_TEMPLAGE_ARGUMENTS
 SkipList<K, V, Compare>::SkipList(SkipList<K, V, Compare> &&rhs) noexcept
-  : head(rhs.head), rear(rhs.rear), max_levels(rhs.max_levels) {
-  rhs.head = rhs.rear = nullptr;
-}
+    : head(rhs.head), rear(rhs.rear), max_levels(rhs.max_levels) { rhs.head = rhs.rear = nullptr; }
 
-template <typename K, typename V, typename Compare>
+SKIPLIST_TEMPLAGE_ARGUMENTS
 SkipList<K, V, Compare> &SkipList<K, V, Compare>::operator=(SkipList<K, V, Compare> &&rhs) noexcept {
   if (rhs == *this) return *this;
 
-  free();
+  Free();
   rear = rhs.rear;
   head = rhs.head;
   max_levels = rhs.max_levels;
@@ -83,17 +102,17 @@ SkipList<K, V, Compare> &SkipList<K, V, Compare>::operator=(SkipList<K, V, Compa
   rhs.head = rhs.rear = nullptr;
 }
 
-template <typename K, typename V, typename Compare>
+SKIPLIST_TEMPLAGE_ARGUMENTS
 Compare SkipList<K, V, Compare>::compare;
 
-template <typename K, typename V, typename Compare>
+SKIPLIST_TEMPLAGE_ARGUMENTS
 std::default_random_engine SkipList<K, V, Compare>::e;
 
-template <typename K, typename V, typename Compare>
+SKIPLIST_TEMPLAGE_ARGUMENTS
 std::uniform_int_distribution<int> SkipList<K, V, Compare>::u(0, 1);
 
-template <typename K, typename V, typename Compare>
-void SkipList<K, V, Compare>::init(int levels) {
+SKIPLIST_TEMPLAGE_ARGUMENTS
+void SkipList<K, V, Compare>::Init(int levels) {
   SkipNode<K, V> *top, *below = new SkipNode<K, V>();
   head = below;
   while (--levels) {
@@ -104,8 +123,8 @@ void SkipList<K, V, Compare>::init(int levels) {
   rear = below;
 }
 
-template <typename K, typename V, typename Compare>
-int SkipList<K, V, Compare>::random_levels() {
+SKIPLIST_TEMPLAGE_ARGUMENTS
+int SkipList<K, V, Compare>::Random_levels() {
   size_t n = 1;
   while (n < max_levels && u(e)) {
     ++n;
@@ -117,8 +136,8 @@ int SkipList<K, V, Compare>::random_levels() {
   return max_levels - n;
 }
 
-template <typename K, typename V, typename Compare>
-void SkipList<K, V, Compare>::end_of_less(SkipNode<K, V> *&node, K key) {
+SKIPLIST_TEMPLAGE_ARGUMENTS
+void SkipList<K, V, Compare>::End_of_less(SkipNode<K, V> *&node, K key) {
   while (node->next_node && compare(node->next_node->getKey(), key)) {
     node = node->next_node;
   }
@@ -126,46 +145,43 @@ void SkipList<K, V, Compare>::end_of_less(SkipNode<K, V> *&node, K key) {
 
 
 
-template <typename K, typename V, typename Compare>
-SkipNode<K, V> *SkipList<K, V, Compare>::find_bef_first(K key) {
+SKIPLIST_TEMPLAGE_ARGUMENTS
+SkipNode<K, V> *SkipList<K, V, Compare>::Find_bef_first(K key) {
   SkipNode<K, V> *node = rear;
-
   while (node) {
-    end_of_less(node, key);
-
+    End_of_less(node, key);
     if (node->next_node && node->next_node->getKey() == key) {
       return node->next_node;
     }
-
     node = node->next_level;
   }
 
   return nullptr;
 }
 
-template <typename K, typename V, typename Compare> inline
-bool SkipList<K, V, Compare>::exist(K key) const {
-  SkipNode<K, V> *node = find_bef_first(key);
+SKIPLIST_TEMPLAGE_ARGUMENTS inline
+bool SkipList<K, V, Compare>::Exist(K key) const {
+  SkipNode<K, V> *node = Find_bef_first(key);
   return node != nullptr;
 }
 
-template <typename K, typename V, typename Compare> inline
-V SkipList<K, V, Compare>::get(K key) {
-  SkipNode<K, V> *node = find_bef_first(key);
+SKIPLIST_TEMPLAGE_ARGUMENTS inline
+V SkipList<K, V, Compare>::Get(K key) {
+  SkipNode<K, V> *node = Find_bef_first(key);
   if (node == nullptr) return {};
   return node->getVal();
 }
 
-template <typename K, typename V, typename Compare>
-void SkipList<K, V, Compare>::add(K key, V val) {
+SKIPLIST_TEMPLAGE_ARGUMENTS
+void SkipList<K, V, Compare>::Add(K key, V val) {
   SkipNode<K, V> *left = rear;
 
   // 找到最上层的插入位置
-  int levels = random_levels();
-  end_of_less(left, key);
+  int levels = Random_levels();
+  End_of_less(left, key);
   while (levels--) {
     left = left->next_level;
-    end_of_less(left, key);
+    End_of_less(left, key);
   }
 
   V *value_ptr = new V(std::move(val));
@@ -173,7 +189,7 @@ void SkipList<K, V, Compare>::add(K key, V val) {
   SkipNode<K, V> *above = left->next_node;
   while (left->next_level) {
     left = left->next_level;
-    end_of_less(left, key);
+    End_of_less(left, key);
 
     left->insert_node(new SkipNode<K, V>(key, value_ptr));
     above->next_level = left->next_node;
@@ -182,19 +198,19 @@ void SkipList<K, V, Compare>::add(K key, V val) {
   }
 }
 
-template <typename K, typename V, typename Compare>
-bool SkipList<K, V, Compare>::erase_last(K key) {
+SKIPLIST_TEMPLAGE_ARGUMENTS
+bool SkipList<K, V, Compare>::Erase_last(K key) {
   SkipNode<K, V> *node = rear;
 
   while (node) {
-    end_of_less(node, key);
+    End_of_less(node, key);
 
     if (node->next_node && node->next_node->getKey() == key) {
       node->release_node();
       node->rm_node();
       while (node->next_level) {
         node = node->next_level;
-        end_of_less(node, key);
+        End_of_less(node, key);
         node->rm_node();
       }
       return true;
@@ -206,17 +222,12 @@ bool SkipList<K, V, Compare>::erase_last(K key) {
   return false;
 }
 
-template <typename K>
-std::string my_to_string(const K &key) {
-  return std::to_string(key);
-}
-template <>
-std::string my_to_string(const std::string &s) {
-  return s;
-}
+template <typename K> std::string my_to_string(const K &key) { return std::to_string(key); }
 
-template <typename K, typename V, typename Compare>
-void SkipList<K, V, Compare>::print() const {
+template <> std::string my_to_string(const std::string &s) { return s; }
+
+SKIPLIST_TEMPLAGE_ARGUMENTS
+void SkipList<K, V, Compare>::Print() const {
   if (head->next_node == nullptr) return;
   auto node = head;
   /*
@@ -256,7 +267,7 @@ void SkipList<K, V, Compare>::print() const {
       size_t column = uMap.find(level_node->next_level)->second;
       uMap[level_node] = column;
 
-      (*levels_rit)[column] = levels.back()[column]; // 应更改为拷贝指针
+      (*levels_rit)[column] = levels.back()[column];
     }
   }
   reverse_level(head);
@@ -301,8 +312,8 @@ void SkipList<K, V, Compare>::print() const {
 
 }
 
-template <typename K, typename V, typename Compare>
-void SkipList<K, V, Compare>::free() {
+SKIPLIST_TEMPLAGE_ARGUMENTS
+void SkipList<K, V, Compare>::Free() {
   if (!head) return;
   SkipNode<K, V> *node = head;
   while (node->next_node) {
@@ -324,10 +335,8 @@ void SkipList<K, V, Compare>::free() {
   }
 }
 
-template <typename K, typename V, typename Compare>
-SkipList<K, V, Compare>::~SkipList() {
-  free();
-}
+SKIPLIST_TEMPLAGE_ARGUMENTS SkipList<K, V, Compare>::~SkipList() { Free(); }
 
+}// namespace SKIPLIST
 
 #endif // __SKIPLIST_H__

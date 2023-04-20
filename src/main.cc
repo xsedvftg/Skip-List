@@ -2,33 +2,32 @@
 
 int main() {
   // 示例用法
-  SkipList<int, int> origin_int;
-  SkipList<int, int> used = std::move(origin_int);
-  used.add(13, 3);
-  used.add(34, 8);
-  used.add(3, 8);
-  used.add(22, 8);
-  used.add(103, 8);
-  used.add(1, 8);
-  used.add(8, 8);
-  used.print();
-  used.erase_last(3);
-  used.print();
-  std::cout << used.get(13) << '\n';
+  SKIPLIST::SkipList<int, int> origin_int;
+  SKIPLIST::SkipList<int, int> used = std::move(origin_int);
+  used.Add(13, 3);
+  used.Add(34, 8);
+  used.Add(3, 8);
+  used.Add(22, 8);
+  used.Add(103, 8);
+  used.Add(1, 8);
+  used.Add(8, 8);
+  used.Print();
+  used.Erase_last(3);
+  used.Print();
+  std::cout << used.Get(13) << '\n';
 
   // 示例用法
-  SkipList<std::string, int> origin_string;
-  SkipList<std::string, int> used2 = std::move(origin_string);
-  used2.add("13", 3);
-  used2.add("34", 8);
-  used2.add("3", 8);
-  used2.add("22", 8);
-  used2.add("103", 8);
-  used2.add("1", 8);
-  used2.add("8", 8);
-  used2.print();
-  used2.erase_last("3");
-  used2.print();
-  std::cout << used2.get("13") << std::endl;
-
+  SKIPLIST::SkipList<std::string, int> origin_string;
+  SKIPLIST::SkipList<std::string, int> used2 = std::move(origin_string);
+  used2.Add("13", 3);
+  used2.Add("34", 8);
+  used2.Add("3", 8);
+  used2.Add("22", 8);
+  used2.Add("103", 8);
+  used2.Add("1", 8);
+  used2.Add("8", 8);
+  used2.Print();
+  used2.Erase_last("3");
+  used2.Print();
+  std::cout << used2.Get("13") << std::endl;
 }
