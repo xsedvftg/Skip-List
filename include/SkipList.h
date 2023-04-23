@@ -34,7 +34,7 @@ class SkipList {
 
   void Add(const K &key, const V &val);
 
-  bool Erase_last(const K &key);
+  bool EraseLast(const K &key);
 
   void Print() const;
 
@@ -231,7 +231,7 @@ void SKIPLIST_TYPE::Add(const K &key, const V &val) {
 }
 
 SKIPLIST_TEMPLAGE_ARGUMENTS
-bool SKIPLIST_TYPE::Erase_last(const K &key) {
+bool SKIPLIST_TYPE::EraseLast(const K &key) {
   SKIPNODE_TYPE *node = rear_;
 
   while (node) {

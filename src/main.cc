@@ -12,7 +12,7 @@ int main() {
   used.Add(1, 8);
   used.Add(8, 8);
   // used.Print();
-  // used.Erase_last(3);
+  // used.EraseLast(3);
   // used.Print();
   // std::cout << used.Get(13) << '\n';
 
@@ -27,7 +27,7 @@ int main() {
   used2.Add("1", 8);
   used2.Add("8", 8);
   // used2.Print();
-  // used2.Erase_last("3");
+  // used2.EraseLast("3");
   // used2.Print();
   // std::cout << used2.Get("13") << std::endl;
 

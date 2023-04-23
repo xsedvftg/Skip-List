@@ -8,9 +8,11 @@ Intuitive implementation
 
 * You can specify any sort method; by default, std::less is used
 
-* The basic operations are `add(key, val)`, `erase_last(key)`, `get(key)`, `print()`
+* The basic operations are `Add(key, val)`, `EraseLast(key)`, `Get(key)`, `Print()`
 
-* using `skiplist.print()` to output the structure graph through standard output
+* Supports normal iteration and range iteration
+
+* Call `skiplist.Print()` to output the structure graph through standard output
 
   * example:
 
