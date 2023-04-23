@@ -1,6 +1,7 @@
 #include <utility>
 
 #define SKIPNODE_TEMPLATE_ARGUMENTS template <typename K, typename V>
+#define SKIPNODE_TYPE SkipNode<K, V>
 
 namespace SKIPLIST {
 
@@ -8,14 +9,11 @@ SKIPNODE_TEMPLATE_ARGUMENTS
 struct SkipNode {
   SkipNode() = default;
 
-  SkipNode(K key_, V value)
-    : key(key_), val(new V(std::move(value))) {}
+  SkipNode(const K &key_, const V &value) : key(key_), val(new V(std::move(value))) {}
 
-  SkipNode(K key_, V *value_ptr)
-    : key(key_), val(value_ptr) {}
+  SkipNode(const K &key_, V *value_ptr) : key(key_), val(value_ptr) {}
 
-  explicit SkipNode(SkipNode *level)
-    : next_level(level) {}
+  explicit SkipNode(SkipNode *level) : next_level(level) {}
 
   const K &getKey() const;
   const V &getVal() const;
@@ -48,31 +46,31 @@ struct SkipNode {
 };
 
 SKIPNODE_TEMPLATE_ARGUMENTS inline
-const K &SkipNode<K, V>::getKey() const {
+const K &SKIPNODE_TYPE::getKey() const {
   return key;
 }
 
 SKIPNODE_TEMPLATE_ARGUMENTS inline
-const V &SkipNode<K, V>::getVal() const {
+const V &SKIPNODE_TYPE::getVal() const {
   return *val;
 }
 
 SKIPNODE_TEMPLATE_ARGUMENTS inline
-void SkipNode<K, V>::release_node() {
+void SKIPNODE_TYPE::release_node() {
   if (next_node == nullptr) return;
   delete next_node->val;
   next_node->val = nullptr;
 }
 
 SKIPNODE_TEMPLATE_ARGUMENTS inline
-void SkipNode<K, V>::insert_node(SkipNode *node) {
+void SKIPNODE_TYPE::insert_node(SkipNode *node) {
   SkipNode *temp = next_node;
   next_node = node;
   node->next_node = temp;
 }
 
 SKIPNODE_TEMPLATE_ARGUMENTS inline
-void SkipNode<K, V>::rm_node() {
+void SKIPNODE_TYPE::rm_node() {
   if (next_node == nullptr) return;
   SkipNode *temp = next_node;
   next_node = temp->next_node;
